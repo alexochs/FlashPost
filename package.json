@@ -1,0 +1,19 @@
+{
+  "name": "flashpost",
+  "version": "1.0.0",
+  "description": "all-in-one social media posting service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexochs/FlashPost.git"
+  },
+  "author": "Alex Ochs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexochs/FlashPost/issues"
+  },
+  "homepage": "https://github.com/alexochs/FlashPost#readme"
+}
