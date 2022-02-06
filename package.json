@@ -4,6 +4,7 @@
   "description": "all-in-one social media posting service",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/alexochs/FlashPost/issues"
   },
-  "homepage": "https://github.com/alexochs/FlashPost#readme"
+  "homepage": "https://github.com/alexochs/FlashPost#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }

@@ -1,5 +1,8 @@
+const express = require("express");
+const app = express();
+
 const main = () => {
-    console.log("Hello, World!");
+    app.listen(80);
 }
 
 main();
