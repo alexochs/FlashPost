@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alexochs/FlashPost.git"
+    "url": "git+https://github.com/alexochs/OmniPost.git"
   },
   "author": "Alex Ochs",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/alexochs/FlashPost/issues"
+    "url": "https://github.com/alexochs/OmniPost/issues"
   },
-  "homepage": "https://github.com/alexochs/FlashPost#readme",
+  "homepage": "https://github.com/alexochs/OmniPost#readme",
   "dependencies": {
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
