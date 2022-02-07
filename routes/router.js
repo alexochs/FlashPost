@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-
+const database = require("../database/database");
 const twitter = require("../controllers/twitter");
 
 router.get("/", async (req, res) => {
-    res.render("index", { twitterAuthUrl: twitter.getAuthUrl(), twitterUsername: await twitter.getUsername("testSession")});
+    console.log(req.session.id);
+    res.render("index", { twitterAuthUrl: twitter.getAuthUrl(), twitterUsername: await twitter.getUsername(req.session.id)});
 });
 
 router.get("/twitter", twitter.login, (req, res) => {
@@ -12,6 +13,11 @@ router.get("/twitter", twitter.login, (req, res) => {
 });
 
 router.get("/tweet", twitter.tweet, (req, res) => {
+    res.redirect("/");
+});
+
+router.get("/newsession", twitter.tweet, (req, res) => {
+    req.session.destroy();
     res.redirect("/");
 });
 

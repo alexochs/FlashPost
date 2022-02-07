@@ -1,7 +1,7 @@
 const { initializeApp, applicationDefault, cert } = require("firebase-admin/app");
 const { getFirestore, Timestamp, FieldValue } = require("firebase-admin/firestore");
-//const { getAnalytics } = require("firebase-admin/");
-
+const { getAuth, signInWithPopup, GoogleAuthProvider } = require("firebase/auth");
+const provider = new GoogleAuthProvider();
 const serviceAccount = require("../serviceAccountKey.json");
 const { sendFile } = require("express/lib/response");
 
@@ -9,6 +9,7 @@ class Database {
     #app = null;
     #analytics = null;
     #db = null;
+    #ui = null;
 
     constructor() {
         const firebaseConfig = {
@@ -24,20 +25,21 @@ class Database {
         this.#app = initializeApp({
             credential: cert(serviceAccount)
         });
+
         this.#db = getFirestore();
         //this.#analytics = getAnalytics(this.#app);
-    }
-
-    async test() {
-        await this.write("testSession/someTest", { testData: "nonono" });
-        const data = await this.read("testSession/someTest");
-        console.log(data);
     }
 
     async read(documentPath) {
         const doc = await this.#db.doc(documentPath).get();
         const data = doc.data();
-        return data;
+        if (typeof data === "undefined") {
+            console.log("Could not read data!");
+            return null;
+        }
+        else {
+            return data;
+        }
     }
 
     async write(documentPath, data) {
@@ -61,12 +63,14 @@ class Database {
 
     async getTwitterStateToken(session) {
         const data = await this.read(session + "/twitter");
-        return data.state;
+        if (data === null) return "invalid token";
+        else return data.state;
     }
 
     async getTwitterUsername(session) {
         const data = await this.read(session + "/twitter");
-        return data.username;
+        if (data === null) return "invalid username"
+        else return data.username;
     }
 }
 

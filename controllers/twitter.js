@@ -80,7 +80,7 @@ class Twitter {
     }
 
     async getUsername(session) {
-        if (await twitter.isLoggedIn("testSession")) {
+        if (await twitter.isLoggedIn(session)) {
             const userName = await database.getTwitterUsername(session);
             return userName;
         }
@@ -99,7 +99,7 @@ class Twitter {
     async login(req, res, next) {
         console.log("Saving Twitter tokens...");
         await twitter.setTokens(
-            "testSession",
+            req.session.id,
             {
                 state: req.query.state,
                 code: req.query.code,
@@ -125,8 +125,8 @@ class Twitter {
         console.log("Fetch and save Twitter user data...");
         const { data } = await twitter.#api.client.v2.me();
         console.log("Successfully fetched user data!");
-        twitter.setUserData("testSession", data);
-        console.log("Successfully saved user data!\nTwitter ready! " + "@" + await twitter.getUsername("testSession"));
+        twitter.setUserData(req.session.id, data);
+        console.log("Successfully saved user data!\nTwitter ready! " + "@" + await twitter.getUsername(req.session.id));
         
         next();
     }
@@ -145,7 +145,7 @@ class Twitter {
     }
 
     async tweet(req, res, next) {
-        if (await twitter.isLoggedIn("testSession")) {
+        if (await twitter.isLoggedIn(req.session.id)) {
             const text = "Magic Number: " + Math.trunc((Math.random()*100)) + "\nThis is a test post made by OmniPost gang.";
             const { data } = await twitter.#api.client.v2.tweet(text);
             console.log("Tweet successfully posted!");
