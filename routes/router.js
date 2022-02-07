@@ -3,8 +3,8 @@ const router = express.Router();
 
 const twitter = require("../controllers/twitter");
 
-router.get("/", (req, res) => {
-    res.render("index", { twitterAuthUrl: twitter.getAuthUrl(), twitterUsername: twitter.getUsername()});
+router.get("/", async (req, res) => {
+    res.render("index", { twitterAuthUrl: twitter.getAuthUrl(), twitterUsername: await twitter.getUsername("testSession")});
 });
 
 router.get("/twitter", twitter.login, (req, res) => {
