@@ -13,12 +13,6 @@ const setup = () => {
     app.listen(80);
 };
 
-/*const tweet = () => {
-    const text = "Hello, World! via FlashPost(tm)";
-    results = twitter.v2.tweetCountRecent("elon musk");
-    console.log(results);
-};*/
-
 const main = () => {
     setup();
 }

@@ -8,6 +8,18 @@
 </head>
 <body>
     <h1>OmniPost</h1>
-    <button onclick="window.location.replace('<%= authTwitterUrl %>')">Login Twitter</button>
+    <div>
+        <h3>Twitter</h3>
+        <div>
+            <% if (twitterUsername ) { %>
+                <p>Logged in as <%= twitterUsername %></p>
+            <% } else { %>
+                <button onclick="window.location.replace('<%= twitterAuthUrl %>')">Login</button>
+            <% } %>
+        </div>
+        <% if (twitterUsername ) { %>
+            <button onclick="window.location.replace(`/tweet`)">Post Tweet</button>
+        <% } %>
+    </div>
 </body>
 </html>
