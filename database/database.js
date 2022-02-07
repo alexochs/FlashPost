@@ -29,11 +29,44 @@ class Database {
     }
 
     async test() {
-        //await this.#db.doc("tokens/test"+Math.trunc(Math.random() * 100)).set({ data: "test" });
+        await this.write("testSession/someTest", { testData: "nonono" });
+        const data = await this.read("testSession/someTest");
+        console.log(data);
+    }
+
+    async read(documentPath) {
+        const doc = await this.#db.doc(documentPath).get();
+        const data = doc.data();
+        return data;
     }
 
     async write(documentPath, data) {
-        await this.#db.doc(documentPath).set(data);
+        await this.#db.doc(documentPath).set(data, { merge: true });
+    }
+
+    async setTwitterTokens(session, tokens) {
+        await this.write(session + "/twitter", {
+            state: tokens.state,
+            code: tokens.code,
+        });
+    }
+
+    async setTwitterUserData(session, userData) {
+        await this.write(session + "/twitter", {
+            id: userData.id,
+            name: userData.name,
+            username: userData.username,
+        });
+    }
+
+    async getTwitterStateToken(session) {
+        const data = await this.read(session + "/twitter");
+        return data.state;
+    }
+
+    async getTwitterUsername(session) {
+        const data = await this.read(session + "/twitter");
+        return data.username;
     }
 }
 

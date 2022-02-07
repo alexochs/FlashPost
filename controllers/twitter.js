@@ -24,7 +24,6 @@ class Twitter {
         name: null,
         username: null,
     }
-    #isLoggedIn = false;
     #callbackUrl = "http://127.0.0.1/twitter";
 
     constructor()  {
@@ -37,6 +36,7 @@ class Twitter {
         this.#auth.url = url;
         this.#auth.codeVerifier = codeVerifier;
         this.#auth.state = state;
+        console.log("Auth State:" + state);
     }
 
     getAuthUrl() {
@@ -59,40 +59,76 @@ class Twitter {
         return this.#auth.result.code;
     }
 
-    setAuthResult(session, result) {
-        database.write(session + "/tokens", result);
+    async getAuthResult(session) {
+        return await database.read(session + "/twitter/tokens");
     }
 
-    getUsername() {
-        return this.#user.username;
+    async setAuthResult(session, result) {
+        await database.write(session + "/twitter/tokens", result);
     }
 
-    isLoggedIn() {
-        if (!this.#isLoggedIn || (this.#auth.state !== this.#auth.result.state)) return false;
+    async setTokens(session, tokens) {
+        await database.setTwitterTokens(session, tokens);
+    }
+
+    async setUserData(session, userData) {
+        await database.setTwitterUserData(session, userData);
+    }
+
+    async getStateToken(session) {
+        return await database.getTwitterStateToken(session);
+    }
+
+    async getUsername(session) {
+        if (await twitter.isLoggedIn("testSession")) {
+            const userName = await database.getTwitterUsername(session);
+            return userName;
+        }
+        else {
+            console.log("Cannot get username: not logged in!");
+            return null;
+        }
+    }
+
+    async isLoggedIn(session) {
+        const stateToken = await twitter.getStateToken(session);
+        if (this.#auth.state !== stateToken) return false;
         else return true;
     }
 
     async login(req, res, next) {
-        twitter.setAuthResult(
+        console.log("Saving Twitter tokens...");
+        await twitter.setTokens(
             "testSession",
             {
                 state: req.query.state,
                 code: req.query.code,
             }
         );
+        console.log("Twitter tokens saved!");
 
-        if (!twitter.#auth || twitter.#auth.state !== twitter.#auth.result.state) {
+        console.log("Checking if Twitter tokens match...");
+        if (twitter.#auth.state !== req.query.state) {
+            console.log("Tokens do not match! Abort login...");
             return;
         }
+        console.log("Twitter tokens match!");
 
+        console.log("Logging in...");
         twitter.#api = await twitter.#baseApi.loginWithOAuth2({
-            code: twitter.getAuthResultCode(),
-            codeVerifier: twitter.getAuthCodeVerifier(),
+            code: req.query.code,
+            codeVerifier: twitter.#auth.codeVerifier,
             redirectUri: "http://127.0.0.1/twitter",
         });
+        console.log("Successfully logged in!");
 
-        twitter.#isLoggedIn = true;
-        twitter.refresh(req, res, next);
+        console.log("Fetch and save Twitter user data...");
+        const { data } = await twitter.#api.client.v2.me();
+        console.log("Successfully fetched user data!");
+        twitter.setUserData("testSession", data);
+        console.log("Successfully saved user data!\nTwitter ready! " + "@" + await twitter.getUsername("testSession"));
+        
+        next();
     }
 
     async refresh(req, res, next) {
@@ -109,12 +145,13 @@ class Twitter {
     }
 
     async tweet(req, res, next) {
-        if (twitter.isLoggedIn()) {
+        if (await twitter.isLoggedIn("testSession")) {
             const text = "Magic Number: " + Math.trunc((Math.random()*100)) + "\nThis is a test post made by OmniPost gang.";
             const { data } = await twitter.#api.client.v2.tweet(text);
+            console.log("Tweet successfully posted!");
         }
         else {
-            alert("You're not logged in!");
+            console.error("You're not logged in!");
         }
 
         next();
