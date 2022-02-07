@@ -5,7 +5,7 @@ const twitter = require("../controllers/twitter");
 
 router.get("/", async (req, res) => {
     console.log(req.session.id);
-    res.render("index", { twitterAuthUrl: twitter.getAuthUrl(), twitterUsername: await twitter.getUsername(req.session.id)});
+    res.render("index", { twitterAuthUrl: twitter.getAuthUrl(), twitterUsername: await twitter.getUsername(req.session.id) || "Connect"});
 });
 
 router.get("/twitter", twitter.login, (req, res) => {

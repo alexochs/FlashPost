@@ -8,6 +8,8 @@ const app = express();
 const setup = () => {
     app.set("view engine", "ejs");
 
+    app.use(express.static("public"));
+
     app.use(session({
         secret: process.env.SESSION_SECRET_KEY,
         resave: true,
