@@ -1,7 +1,7 @@
 const { response } = require("express");
 const res = require("express/lib/response");
-
 const TwitterApi = require("twitter-api-v2").default;
+const database = require("../database/database");
 
 class Twitter {
     #baseApi = null;
@@ -29,8 +29,8 @@ class Twitter {
 
     constructor()  {
         this.#baseApi = new TwitterApi({
-            clientId: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
+            clientId: process.env.TWITTER_CLIENT_ID,
+            clientSecret: process.env.TWITTER_CLIENT_SECRET,
         });
 
         const { url, codeVerifier, state } = this.#baseApi.generateOAuth2AuthLink(this.#callbackUrl, { scope: ['tweet.read', 'tweet.write', 'users.read', 'offline.access'] });
@@ -59,8 +59,8 @@ class Twitter {
         return this.#auth.result.code;
     }
 
-    setAuthResult(result) {
-        this.#auth.result = result;
+    setAuthResult(session, result) {
+        database.write(session + "/tokens", result);
     }
 
     getUsername() {
@@ -73,10 +73,13 @@ class Twitter {
     }
 
     async login(req, res, next) {
-        twitter.setAuthResult({
-            state: req.query.state,
-            code: req.query.code,
-        });
+        twitter.setAuthResult(
+            "testSession",
+            {
+                state: req.query.state,
+                code: req.query.code,
+            }
+        );
 
         if (!twitter.#auth || twitter.#auth.state !== twitter.#auth.result.state) {
             return;
@@ -119,5 +122,4 @@ class Twitter {
 };
 
 const twitter = new Twitter();
-
 module.exports = twitter;
