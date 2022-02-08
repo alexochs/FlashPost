@@ -12,7 +12,7 @@ router.get("/twitter", twitter.login, (req, res) => {
     res.redirect("/");
 });
 
-router.get("/tweet", twitter.tweet, (req, res) => {
+router.post("/tweet", twitter.tweet, (req, res) => {
     res.redirect("/");
 });
 

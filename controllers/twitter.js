@@ -146,9 +146,9 @@ class Twitter {
 
     async tweet(req, res, next) {
         if (await twitter.isLoggedIn(req.session.id)) {
-            const text = "Magic Number: " + Math.trunc((Math.random()*100)) + "\nThis is a test post made by OmniPost gang.";
+            const text = req.body.contentText + "\n\nThis post was made by #OmniPost gang.";
             const { data } = await twitter.#api.client.v2.tweet(text);
-            console.log("Tweet successfully posted!");
+            console.log("Tweet successfully posted:\n===\n" + text + "\n===\n");
         }
         else {
             console.error("You're not logged in!");

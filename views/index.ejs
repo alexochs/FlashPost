@@ -22,9 +22,12 @@
             <p class="d-flex d-md-flex flex-column justify-content-md-end align-items-md-center"><i class="icon ion-social-twitter"></i>Paragraph</p><a href="/twitter"></a>-->
         </div>
         <% if (twitterUsername !== "Connect") { %>
-            <p>Type in here the content you want to post on your socials</p><textarea style="height: 128px;width: 512px;"></textarea>
-            </div><button class="btn btn-primary" type="button" onclick="window.location.replace(`/tweet`)">Post</button>
-            </div><button class="btn btn-primary" type="button" onclick="window.location.replace(`/newsession`)">New Session (API Logout)</button>
+            <p>Type in here the content you want to post on your socials</p>
+            <form action="/tweet" method="POST">
+                <textarea style="height: 128px;width: 512px;" name="contentText"></textarea>
+                </div><button class="btn btn-primary" type="submit">Post</button>
+            </form>
+        </div><button class="btn btn-primary" type="button" onclick="window.location.replace(`/newsession`)">New Session (API Logout)</button>
         <% } %>
     <script src="bootstrap/js/bootstrap.min.js"></script>
 </body>

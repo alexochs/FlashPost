@@ -5,10 +5,14 @@ dotenv.config();
 const express = require("express");
 const app = express();
 
+const bodyParser = require("body-parser");
+
 const setup = () => {
     app.set("view engine", "ejs");
 
     app.use(express.static("public"));
+
+    app.use(bodyParser.urlencoded({extended: true}))
 
     app.use(session({
         secret: process.env.SESSION_SECRET_KEY,
