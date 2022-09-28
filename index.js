@@ -1,3 +1,9 @@
+const https = require('https');
+const fs = require('fs');
+const options = {
+  key: fs.readFileSync("./certs/localhost-key.pem"),
+  cert: fs.readFileSync("./certs/localhost.pem"),
+};
 const session = require("express-session");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -23,7 +29,7 @@ const setup = () => {
     const mainRouter = require("./routes/router");
     app.use("/", mainRouter);
     
-    app.listen(80);
+    https.createServer(options, app).listen(1337);
 };
 
 const main = () => {

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const database = require("../database/database");
 const twitter = require("../controllers/twitter");
+const facebook = require("../controllers/facebook");
 
 router.get("/", async (req, res) => {
     console.log(req.session.id);
@@ -9,6 +10,10 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/twitter", twitter.login, (req, res) => {
+    res.redirect("/");
+});
+
+router.get("/facebook", facebook.login, (req, res) => {
     res.redirect("/");
 });
 
